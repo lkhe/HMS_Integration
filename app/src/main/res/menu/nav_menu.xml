@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:title="Home"
+            app:showAsAction="never"/>
+        <item
+            android:id="@+id/nav_messages"
+            android:title="Messages"
+            app:showAsAction="never"/>
+        <item
+            android:id="@+id/nav_friends"
+            android:title="Friends"
+            app:showAsAction="never"/>
+        <item
+            android:id="@+id/nav_discussion"
+            android:title="Discussion"
+            app:showAsAction="never"/>
+    </group>
+
+    <item android:title="Sub items">
+        <menu>
+            <item
+                android:title="Sub item 1"
+                app:showAsAction="never"/>
+            <item
+                android:title="Sub item 2"
+                app:showAsAction="never"/>
+        </menu>
+    </item>
+
+</menu>
