@@ -34,19 +34,15 @@ class LocationFragment : Fragment() {
 
     private lateinit var fusedLocationProviderClient : FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
-    private lateinit var settingsClient: SettingsClient
-    private lateinit var locationSettingsRequest: LocationSettingsRequest
     private lateinit var locationCallback: EricLocationCallback
     private lateinit var latlngTextView: TextView
     private lateinit var timeStampTextView: TextView
-
-    private var latlng: LatLng = LatLng(51.0,10.0)
 
      inner class EricLocationCallback : LocationCallback() {
 
         override fun onLocationResult(locationResult: LocationResult?) {
             locationResult?.apply {
-                updateUI(this.lastLocation)
+                onLocationChange(this.lastLocation)
             }
         }
     }
@@ -58,47 +54,51 @@ class LocationFragment : Fragment() {
 
         val rootView = inflater.inflate(R.layout.fragment_location, container, false)
 
-        if (!LocationFragment.hasPermissions(
+        if (!hasPermissions(
                 context!!,
-                LocationFragment.RUNTIME_PERMISSIONS
+                RUNTIME_PERMISSIONS
             )
         ) {
             //no permission, request
             ActivityCompat.requestPermissions(requireActivity(),
-                LocationFragment.RUNTIME_PERMISSIONS, 0)
+                RUNTIME_PERMISSIONS, 0)
         }
-
-        settingsClient = LocationServices.getSettingsClient(requireActivity())
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-        locationCallback = EricLocationCallback()
-        locationRequest = LocationRequest()
-            .setInterval(10000)
-            .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-        locationSettingsRequest = LocationSettingsRequest.Builder()
-            .addLocationRequest(locationRequest)
-            .build()
-        settingsClient.checkLocationSettings(locationSettingsRequest)
-            .addOnSuccessListener(OnSuccessListener {
-                fusedLocationProviderClient
-                    .requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
-                    .addOnSuccessListener{ Timber.i("request location success") }
-                    .addOnFailureListener { OnFailureListener { Timber.e(it.localizedMessage) } }
-            })
-            .addOnFailureListener(OnFailureListener { Timber.e(it.localizedMessage)})
-
-        fusedLocationProviderClient.lastLocation
-            .addOnSuccessListener {
-                updateUI(it)
-            }
-            .addOnFailureListener { OnFailureListener { Timber.e(it.localizedMessage) } }
 
         latlngTextView = rootView.findViewById(R.id.latlng)
         timeStampTextView = rootView.findViewById(R.id.timeStamp)
+
+        startLocationUpdate()
+
         // Inflate the layout for this fragment
         return rootView
     }
 
-     fun updateUI(location: Location) {
+    fun startLocationUpdate() {
+
+        //create location request to start receiving update
+        locationRequest = LocationRequest()
+            .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+            .setInterval(10000)
+            .setFastestInterval(2000)
+
+        //create location settings request with location request
+        val locationSettingsRequest = LocationSettingsRequest.Builder()
+            .addLocationRequest(locationRequest)
+            .build()
+
+        //check if location settings are allowed
+        LocationServices.getSettingsClient(requireActivity())
+            .checkLocationSettings(locationSettingsRequest)
+            .addOnSuccessListener {
+                LocationServices.getFusedLocationProviderClient(requireActivity()).requestLocationUpdates(locationRequest, EricLocationCallback(), Looper.getMainLooper())
+            }
+            .addOnFailureListener {
+                Timber.e(it.localizedMessage)
+            }
+    }
+
+
+     fun onLocationChange(location: Location) {
         latlng.latitude = location.latitude
         latlng.longitude = location.longitude
         latlngTextView.text = latlng.latitude.toString() + "," + latlng.longitude.toString()
@@ -113,6 +113,8 @@ class LocationFragment : Fragment() {
     }
 
     companion object {
+
+        var latlng: LatLng = LatLng(51.0,10.0)
 
         private val RUNTIME_PERMISSIONS:Array<String> = arrayOf(
             Manifest.permission.WRITE_EXTERNAL_STORAGE,

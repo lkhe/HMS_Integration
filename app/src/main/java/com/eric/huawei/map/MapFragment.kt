@@ -11,9 +11,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import com.eric.huawei.R
+import com.eric.huawei.location.LocationFragment
+import com.huawei.hms.maps.CameraUpdateFactory
 import com.huawei.hms.maps.HuaweiMap
 import com.huawei.hms.maps.MapView
 import com.huawei.hms.maps.OnMapReadyCallback
+import com.huawei.hms.maps.model.MarkerOptions
 import timber.log.Timber
 
 
@@ -24,7 +27,7 @@ import timber.log.Timber
  */
 class MapFragment : Fragment(), OnMapReadyCallback {
 
-    private var map: HuaweiMap? = null
+    private var hMap: HuaweiMap? = null
     private lateinit var mapView: MapView
 
 
@@ -53,8 +56,18 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     override fun onMapReady(map: HuaweiMap?) {
-        this.map = map
-        Timber.i("onMapReady")
+        this.hMap = map
+        val markerLatLng = LocationFragment.latlng
+        hMap?.apply {
+            this.setMyLocationEnabled(true);
+            this.getUiSettings().setMyLocationButtonEnabled(true)
+            this.setOnMyLocationButtonClickListener {
+                addMarker(MarkerOptions().position(LocationFragment.latlng).title("Me"))
+                animateCamera(CameraUpdateFactory.newLatLngZoom(markerLatLng, 8.5f))
+                false
+            }
+
+        }
     }
 
     //TODO: permission denied
@@ -76,8 +89,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
 
         private val RUNTIME_PERMISSIONS:Array<String> = arrayOf(
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.READ_EXTERNAL_STORAGE,
+//            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+//            Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.INTERNET,
