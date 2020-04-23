@@ -27,6 +27,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private var map: HuaweiMap? = null
     private lateinit var mapView: MapView
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -48,7 +49,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         mapView.onCreate(null)
         mapView.getMapAsync(this)
 
-        Timber.i("onCreateView")
         return rootView
     }
 
@@ -80,7 +80,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.INTERNET
+            Manifest.permission.INTERNET,
+            Manifest.permission.ACCESS_BACKGROUND_LOCATION
         )
     }
 

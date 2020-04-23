@@ -1,7 +1,7 @@
 package com.eric.huawei
 
 import android.os.Bundle
-import com.eric.huawei.Base.BaseMainActivity
+import com.eric.huawei.base.BaseMainActivity
 import com.huawei.agconnect.config.AGConnectServicesConfig
 import com.huawei.hms.aaid.HmsInstanceId
 import kotlinx.coroutines.*
@@ -11,16 +11,16 @@ class MainActivity : BaseMainActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        CoroutineScope(Dispatchers.Default).launch { getToken() }
+        Timber.i("onCreate")
+        CoroutineScope(Dispatchers.Default + SupervisorJob()).launch { getToken(this@MainActivity) }
     }
 
-    private suspend fun getToken() {
-        val appId : String = AGConnectServicesConfig.fromContext(applicationContext).getString("client/app_id")
+    private suspend fun getToken(mainActivity: MainActivity) {
+        val appId : String = AGConnectServicesConfig.fromContext(mainActivity).getString("client/app_id")
         var pushToken : String? = null
 
         withContext(Dispatchers.IO) {
-           pushToken  = HmsInstanceId.getInstance(applicationContext).getToken(appId, "Eric")
+           pushToken  = HmsInstanceId.getInstance(mainActivity).getToken(appId, "HMS")
         }
         pushToken?.let {
             Timber.i(pushToken)

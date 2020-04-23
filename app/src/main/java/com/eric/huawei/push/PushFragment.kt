@@ -1,18 +1,19 @@
-package com.eric.huawei
+package com.eric.huawei.push
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.eric.huawei.R
 
 
 /**
  * A simple [Fragment] subclass.
- * Use the [DummyFragment.newInstance] factory method to
+ * Use the [PushFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class DummyFragment : Fragment() {
+class PushFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -25,6 +26,6 @@ class DummyFragment : Fragment() {
     companion object {
 
         @JvmStatic
-        fun newInstance() = DummyFragment()
+        fun newInstance() = PushFragment()
     }
 }

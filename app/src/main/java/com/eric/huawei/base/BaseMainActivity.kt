@@ -1,4 +1,4 @@
-package com.eric.huawei.Base
+package com.eric.huawei.base
 
 import android.os.Bundle
 import android.view.MenuItem
@@ -6,9 +6,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.viewpager.widget.ViewPager
-import com.eric.huawei.DummyFragment
+import com.eric.huawei.push.PushFragment
 import com.eric.huawei.EricViewPagerAdapter
 import com.eric.huawei.R
+import com.eric.huawei.location.LocationFragment
 import com.eric.huawei.map.MapFragment
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.tabs.TabLayout
@@ -44,9 +45,9 @@ abstract class BaseMainActivity : AppCompatActivity() {
         val viewPager: ViewPager = findViewById(R.id.viewpager)
         val adapter =
             EricViewPagerAdapter(supportFragmentManager)
-        adapter.addFragment(DummyFragment.newInstance(), "1")
-        adapter.addFragment(MapFragment.newInstance(), "2")
-        adapter.addFragment(DummyFragment.newInstance(), "3")
+        adapter.addFragment(PushFragment.newInstance(), "Push")
+        adapter.addFragment(MapFragment.newInstance(), "Map")
+        adapter.addFragment(LocationFragment.newInstance(), "Location")
         viewPager.adapter = adapter
 
 
