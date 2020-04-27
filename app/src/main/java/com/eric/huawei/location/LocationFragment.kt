@@ -73,7 +73,7 @@ class LocationFragment : Fragment() {
         return rootView
     }
 
-    fun startLocationUpdate() {
+    private fun startLocationUpdate() {
 
         //create location request to start receiving update
         locationRequest = LocationRequest()

@@ -1,5 +1,7 @@
 package com.eric.huawei
 
+import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import com.eric.huawei.base.BaseMainActivity
 import com.huawei.agconnect.config.AGConnectServicesConfig
@@ -9,21 +11,32 @@ import timber.log.Timber
 
 class MainActivity : BaseMainActivity() {
 
+    private var pushToken:String? = null
+    private lateinit var job:Job
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Timber.i("onCreate")
-        CoroutineScope(Dispatchers.Default + SupervisorJob()).launch { getToken(this@MainActivity) }
+        job = CoroutineScope(Dispatchers.Default + SupervisorJob()).launch { getToken(this@MainActivity) }
     }
 
-    private suspend fun getToken(mainActivity: MainActivity) {
-        val appId : String = AGConnectServicesConfig.fromContext(mainActivity).getString("client/app_id")
-        var pushToken : String? = null
+    private suspend fun getToken(activity: Activity?) : String? {
 
-        withContext(Dispatchers.IO) {
-           pushToken  = HmsInstanceId.getInstance(mainActivity).getToken(appId, "HMS")
+        var pushToken : String?  = null
+
+        activity?.also {
+            val appId = AGConnectServicesConfig.fromContext(it).getString("client/app_id")
+
+            withContext(Dispatchers.IO) {
+                pushToken  = HmsInstanceId.getInstance(it).getToken(appId, "HMS")
+            }
         }
-        pushToken?.let {
-            Timber.i(pushToken)
-        }
+
+        return pushToken
+    }
+
+    override fun onPause() {
+        super.onPause()
+        job.cancel()
     }
 }
