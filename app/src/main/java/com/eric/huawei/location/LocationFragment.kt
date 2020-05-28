@@ -32,7 +32,7 @@ import java.util.*
  */
 class LocationFragment : Fragment() {
 
-    private lateinit var fusedLocationProviderClient : FusedLocationProviderClient
+//    private lateinit var fusedLocationProviderClient : FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: EricLocationCallback
     private lateinit var latlngTextView: TextView
@@ -107,9 +107,9 @@ class LocationFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        fusedLocationProviderClient.removeLocationUpdates(locationCallback)
-            .addOnSuccessListener { Timber.i("location updates removed") }
-            .addOnFailureListener { Timber.i(it.localizedMessage) }
+//        fusedLocationProviderClient.removeLocationUpdates(locationCallback)
+//            .addOnSuccessListener { Timber.i("location updates removed") }
+//            .addOnFailureListener { Timber.i(it.localizedMessage) }
     }
 
     companion object {

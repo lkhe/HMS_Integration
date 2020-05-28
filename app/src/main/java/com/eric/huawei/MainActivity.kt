@@ -31,7 +31,7 @@ class MainActivity : BaseMainActivity() {
                 pushToken  = HmsInstanceId.getInstance(it).getToken(appId, "HMS")
             }
         }
-
+        Timber.i("Push Token: " + pushToken)
         return pushToken
     }
 
